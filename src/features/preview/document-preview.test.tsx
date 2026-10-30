@@ -100,3 +100,17 @@ describe("Arabic document preview", () => {
     expect(screen.getByText("Service 18")).toBeInTheDocument();
   });
 });
+
+describe("business preview contacts and language", () => {
+  it("shows party email and phone, the issuer VAT number, and tags the page language", () => {
+    const document = createDocument("invoice", "ar");
+    document.content.issuer = { ...document.content.issuer, name: "منشأة", email: "a@issuer.test", phone: "+968 2400 0000", taxId: "OM123" };
+    document.content.client = { ...document.content.client, name: "عميل", email: "b@client.test", phone: "+968 9900 0000", taxId: "HIDDEN" };
+    const { container } = render(<DocumentPreview document={document} />);
+
+    for (const value of ["a@issuer.test", "+968 2400 0000", "b@client.test", "+968 9900 0000", "OM123"]) expect(screen.getByText(value)).toBeInTheDocument();
+    expect(screen.getByText(/الرقم الضريبي/)).toBeInTheDocument();
+    expect(screen.queryByText(/HIDDEN/)).not.toBeInTheDocument();
+    expect(container.querySelector("article.document-page")).toHaveAttribute("lang", "ar");
+  });
+});

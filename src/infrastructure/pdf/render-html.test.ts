@@ -64,3 +64,21 @@ describe("PDF HTML renderer", () => {
     expect(html).not.toContain("Due date");
   });
 });
+
+describe("invoice party contacts", () => {
+  it("prints escaped email, phone and the issuer VAT number for both parties", () => {
+    const document = createDocument("invoice", "en");
+    document.content.issuer = { ...document.content.issuer, name: "Acme", email: "billing@acme.test", phone: "+968 2400 0000", taxId: "OM1234<5>" };
+    document.content.client = { ...document.content.client, name: "Client", email: "ap@client.test", phone: "+968 9900 0000", taxId: "SHOULD-NOT-PRINT" };
+    const html = renderDocumentHtml(document, fonts);
+
+    for (const value of ["billing@acme.test", "+968 2400 0000", "ap@client.test", "+968 9900 0000"]) expect(html).toContain("<bdi>" + value + "</bdi>");
+    expect(html).toContain("VAT number: <bdi>OM1234&lt;5&gt;</bdi>");
+    expect(html).not.toContain("SHOULD-NOT-PRINT");
+  });
+
+  it("omits the VAT line when the issuer has no VAT number", () => {
+    const html = renderDocumentHtml(createDocument("invoice", "ar"), fonts);
+    expect(html).not.toContain("الرقم الضريبي");
+  });
+});

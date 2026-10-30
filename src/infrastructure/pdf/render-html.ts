@@ -42,6 +42,11 @@ function renderCv(document: CvDocument) {
   return '<main class="cv-document ' + (document.templateId === "editorial" ? "editorial" : "professional") + '"><header class="cv-header"><div class="cv-identity">' + photo + '<div class="cv-identity-copy"><h1 class="cv-display cv-name" dir="auto">' + escapeHtml(c.fullName || t.name) + '</h1><p class="cv-headline" dir="auto">' + escapeHtml(c.headline || t.headline) + '</p><p class="cv-specialization" dir="auto">' + escapeHtml(c.specialization || t.specialization) + '</p></div></div><p class="cv-contacts" dir="auto">' + contacts + "</p></header>" + section(t.profile, summary, true) + section(t.experience, experiences, true) + section(t.education, education, true) + section(t.skills, skills ? '<div class="cv-skills">' + skills + "</div>" : "", true) + "</main>";
 }
 
+function partyContact(party: { email: string; phone: string; taxId: string }, vatLabel?: string) {
+  return [party.email, party.phone].filter(Boolean).map((value) => "<p><bdi>" + escapeHtml(value) + "</bdi></p>").join("")
+    + (vatLabel && party.taxId ? "<p>" + escapeHtml(vatLabel) + ": <bdi>" + escapeHtml(party.taxId) + "</bdi></p>" : "");
+}
+
 function renderBusiness(document: InvoiceDocument | QuotationDocument) {
   const c = document.content;
   const ar = document.locale === "ar";
@@ -61,7 +66,7 @@ function renderBusiness(document: InvoiceDocument | QuotationDocument) {
   const notes = c.notes ? section(t.notes, '<p class="body-copy">' + escapeHtml(c.notes) + "</p>") : "";
   const proposal = quotation ? '<p class="proposal-label">' + t.proposal + "</p>" : "";
   const numberLabel = quotation ? t.quoteNumber : t.invoiceNumber;
-  return '<main class="business ' + (quotation ? "quotation" : "invoice") + '"><header class="business-header"><div>' + proposal + "<h1>" + t.type + '</h1><p class="muted"><strong>' + numberLabel + "</strong> · " + escapeHtml(c.number || "—") + '</p></div><div class="issuer"><h2>' + escapeHtml(c.issuer.name || t.business) + '</h2><p>' + escapeHtml(c.issuer.address) + "</p><p>" + escapeHtml(c.issuer.email) + '</p></div></header><section class="business-meta"><div><span class="label">' + (quotation ? t.preparedFor : t.billTo) + "</span><h3>" + escapeHtml(c.client.name || t.client) + "</h3><p>" + escapeHtml(c.client.address) + "</p></div><dl>" + meta + '</dl></section><table><thead><tr><th>' + (quotation ? t.itemService : t.description) + "</th><th>" + t.qty + "</th><th>" + t.price + "</th><th>" + t.amount + "</th></tr></thead><tbody>" + rows + "</tbody></table>" + totalsHtml + terms + notes + "</main>";
+  return '<main class="business ' + (quotation ? "quotation" : "invoice") + '"><header class="business-header"><div>' + proposal + "<h1>" + t.type + '</h1><p class="muted"><strong>' + numberLabel + "</strong> · " + escapeHtml(c.number || "—") + '</p></div><div class="issuer"><h2>' + escapeHtml(c.issuer.name || t.business) + '</h2><p>' + escapeHtml(c.issuer.address) + "</p>" + partyContact(c.issuer, ar ? "الرقم الضريبي" : "VAT number") + '</div></header><section class="business-meta"><div><span class="label">' + (quotation ? t.preparedFor : t.billTo) + "</span><h3>" + escapeHtml(c.client.name || t.client) + "</h3><p>" + escapeHtml(c.client.address) + "</p>" + partyContact(c.client) + "</div><dl>" + meta + '</dl></section><table><thead><tr><th>' + (quotation ? t.itemService : t.description) + "</th><th>" + t.qty + "</th><th>" + t.price + "</th><th>" + t.amount + "</th></tr></thead><tbody>" + rows + "</tbody></table>" + totalsHtml + terms + notes + "</main>";
 }
 
 function styles(fonts: PdfFontAssets) {
