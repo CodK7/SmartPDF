@@ -7,6 +7,7 @@ import { renderDocumentHtml } from "./render-html";
 export { PdfExportBusyError, PdfExportUnavailableError } from "./pdf-errors";
 
 const EXPORT_TIMEOUT_MS = 25_000;
+const EXPORT_DEADLINE_MS = 30_000;
 const MAX_PDF_BYTES = 12 * 1024 * 1024;
 const PDF_HEADER = [0x25, 0x50, 0x44, 0x46, 0x2d];
 
@@ -85,8 +86,20 @@ async function exportCloudflareDocumentPdf(
   return readBoundedPdf(response);
 }
 
+async function withDeadline<T>(operation: Promise<T>, deadlineMs: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new PdfExportUnavailableError()), deadlineMs); }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function exportDocumentPdf(document: SmartDocument, runtime: PdfExportRuntime) {
-  if (runtime.kind === "cloudflare") return exportCloudflareDocumentPdf(document, runtime);
+  if (runtime.kind === "cloudflare") return withDeadline(exportCloudflareDocumentPdf(document, runtime), EXPORT_DEADLINE_MS);
 
   if (process.env.NODE_ENV === "production") throw new PdfExportUnavailableError();
   const { exportLocalDocumentPdf } = await import("#pdf-local-renderer");

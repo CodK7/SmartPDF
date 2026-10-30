@@ -77,3 +77,17 @@ describe("Cloudflare PDF service", () => {
       .rejects.toBeInstanceOf(PdfExportUnavailableError);
   });
 });
+
+describe("PDF export deadline", () => {
+  it("gives up with an unavailable error instead of hanging when the browser never answers", async () => {
+    vi.useFakeTimers();
+    try {
+      const hung = { kind: "cloudflare" as const, browser: { quickAction: vi.fn(() => new Promise<Response>(() => undefined)) } as BrowserRunBinding };
+      const outcome = expect(exportDocumentPdf(createDocument("cv", "en"), hung)).rejects.toBeInstanceOf(PdfExportUnavailableError);
+      await vi.advanceTimersByTimeAsync(31_000);
+      await outcome;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

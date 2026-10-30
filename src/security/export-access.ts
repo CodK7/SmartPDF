@@ -4,6 +4,7 @@ import type { BrowserRunBinding, PdfExportRuntime } from "@/infrastructure/pdf/p
 import { consumeRateLimit } from "./request-guard";
 
 const LOCAL_EXPORT_LIMIT = 8;
+const CONTEXT_TIMEOUT_MS = 3_000;
 const TRUSTED_IP_PATTERN = /^[0-9a-f:.]{3,45}$/i;
 
 interface RateLimitBinding {
@@ -62,7 +63,11 @@ export async function enforceExportAccess(request: Request): Promise<ExportAcces
   }
 
   try {
-    const context = await getCloudflareContext({ async: true });
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const context = await Promise.race([
+      getCloudflareContext({ async: true }),
+      new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("CLOUDFLARE_CONTEXT_TIMEOUT")), CONTEXT_TIMEOUT_MS); }),
+    ]).finally(() => clearTimeout(timer));
     return enforceCloudflareExportAccess(
       request,
       context.env as ExportBindings,

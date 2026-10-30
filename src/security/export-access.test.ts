@@ -109,3 +109,22 @@ describe("export access", () => {
     });
   });
 });
+
+describe("production Cloudflare context", () => {
+  it("returns 503 within the timeout when the Cloudflare context never resolves", async () => {
+    vi.useFakeTimers();
+    vi.stubEnv("NODE_ENV", "production");
+    vi.doMock("@opennextjs/cloudflare", () => ({ getCloudflareContext: () => new Promise(() => undefined) }));
+    try {
+      vi.resetModules();
+      const { enforceExportAccess } = await import("./export-access");
+      const outcome = enforceExportAccess(request({ "cf-connecting-ip": "203.0.113.10" }));
+      await vi.advanceTimersByTimeAsync(3_100);
+      await expect(outcome).resolves.toEqual({ allowed: false, code: "EXPORT_PROTECTION_UNAVAILABLE", status: 503 });
+    } finally {
+      vi.useRealTimers();
+      vi.unstubAllEnvs();
+      vi.doUnmock("@opennextjs/cloudflare");
+    }
+  });
+});

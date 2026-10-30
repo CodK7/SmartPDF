@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname localhost",
     "generate:pdf-fonts": "node scripts/generate-pdf-fonts.mjs",
     "prebuild": "pnpm generate:pdf-fonts",
     "build": "next build",
