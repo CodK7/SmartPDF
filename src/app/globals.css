@@ -69,7 +69,7 @@ button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation
 .document-page[dir="rtl"] .document-display { font-family: var(--font-display-ar); }
 .document-page[data-paper="LETTER"] { width: 215.9mm; min-height: 279.4mm; }
 .page-content { padding: 18mm; }
-.preview-pages { --preview-scale: .42; --paper-width: 210mm; --paper-height: 297mm; display: grid; flex: 0 0 auto; gap: 24px; width: calc(var(--paper-width) * var(--preview-scale)); }
+.preview-pages { margin-inline: auto; --preview-scale: .42; --paper-width: 210mm; --paper-height: 297mm; display: grid; flex: 0 0 auto; gap: 24px; width: calc(var(--paper-width) * var(--preview-scale)); }
 .preview-scale { width: calc(var(--paper-width) * var(--preview-scale)); min-height: calc(var(--paper-height) * var(--preview-scale)); }
 .preview-scale > .document-page { transform: scale(var(--preview-scale)); transform-origin: top left; }
 @media (min-width: 768px) { .preview-pages { --preview-scale: .56; } }

@@ -20,7 +20,7 @@ export function Field({ id, label, hint, error, children }: FieldProps) {
   );
 }
 
-const controlClass = "motion-color min-h-11 w-full rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-base text-[var(--color-text)] outline-none focus:border-[var(--color-focus)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--color-focus)_18%,transparent)] disabled:bg-[var(--color-surface-subtle)]";
+const controlClass = "motion-color min-h-11 w-full rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-base text-[var(--color-text)] outline-none focus:border-[var(--color-focus)] focus:ring-2 focus:ring-[var(--color-focus)] disabled:bg-[var(--color-surface-subtle)]";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...props }, ref) {
   return <input ref={ref} className={clsx(controlClass, className)} {...props} />;

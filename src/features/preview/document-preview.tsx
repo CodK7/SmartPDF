@@ -29,7 +29,7 @@ const previewCopy = {
   },
 } as const;
 
-export function DocumentPreview({ document }: { document: SmartDocument }) {
+export function DocumentPreview({ document, zoom = 1 }: { document: SmartDocument; zoom?: number }) {
   const text = previewCopy[document.locale];
   const pageWidth = document.paper === "LETTER" ? 816 : 794;
   const [scale, setScale] = useState(0.42);
@@ -44,7 +44,7 @@ export function DocumentPreview({ document }: { document: SmartDocument }) {
       const style = window.getComputedStyle(container);
       const availableWidth = container.clientWidth - Number.parseFloat(style.paddingInlineStart) - Number.parseFloat(style.paddingInlineEnd);
       const preferredScale = window.innerWidth >= 1152 ? 0.76 : window.innerWidth >= 768 ? 0.56 : 0.5;
-      const nextScale = Math.min(preferredScale, Math.max(0.25, availableWidth / pageWidth));
+      const nextScale = Math.min(preferredScale, Math.max(0.25, availableWidth / pageWidth)) * zoom;
       setScale((current) => Math.abs(current - nextScale) < 0.001 ? current : Number(nextScale.toFixed(3)));
     };
 
@@ -60,7 +60,7 @@ export function DocumentPreview({ document }: { document: SmartDocument }) {
       observer.disconnect();
       window.removeEventListener("resize", updateScale);
     };
-  }, [pageWidth]);
+  }, [pageWidth, zoom]);
 
   const style = {
     "--preview-scale": String(scale),

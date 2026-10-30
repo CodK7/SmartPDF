@@ -30,13 +30,13 @@ const partySchema = z.object({
   name: shortText,
   email: z.union([z.literal(""), z.email().max(254)]),
   phone: shortText,
-  address: z.string().trim().max(500),
+  address: safeText(500),
   taxId: identifier,
 });
 
 const lineItemSchema = z.object({
   id: z.uuid(),
-  description: z.string().trim().max(500),
+  description: safeText(500),
   quantity: z.number().finite().positive().max(100_000).multipleOf(0.01),
   unitPriceMinor: z.number().int().nonnegative().max(450_000_000),
 });
@@ -66,7 +66,7 @@ const cvContentSchema = z.object({
   experiences: z.array(z.object({
     id: z.uuid(), company: shortText, role: shortText,
     startDate: monthYearText, endDate: monthYearText, current: z.boolean(),
-    bullets: z.array(z.string().trim().max(500)).max(12),
+    bullets: z.array(safeText(500)).max(12),
   })).max(30),
   education: z.array(z.object({
     id: z.uuid(), institution: shortText, degree: shortText,

@@ -65,3 +65,34 @@ describe("save status indicator", () => {
     store.saveState = "saved";
   });
 });
+
+describe("editor guidance and mobile preview", () => {
+  it("clears the completion alert once the blocking fields are corrected", () => {
+    render(<DocumentEditor id={store.activeDocument.id} locale="en" />);
+    fireEvent.click(screen.getByRole("button", { name: /Export PDF/ }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Complete the following");
+
+    const content = store.activeDocument.content;
+    content.issuer.name = "Acme";
+    content.client.name = "Client";
+    content.number = "INV-1";
+    content.lineItems[0]!.description = "Work";
+    content.lineItems[0]!.unitPriceMinor = 1000;
+    fireEvent.change(screen.getByRole("textbox", { name: "Document title" }), { target: { value: "Invoice 2" } });
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("scrolls to the top when switching between Edit and Preview and offers preview zoom", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    render(<DocumentEditor id={store.activeDocument.id} locale="en" />);
+    fireEvent.click(screen.getByRole("tab", { name: "Preview" }));
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0 });
+
+    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+    expect(screen.getByText("150%")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Zoom out" }));
+    expect(screen.getByText("100%")).toBeInTheDocument();
+    scrollTo.mockRestore();
+  });
+});

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="230 80 865 1090" role="img" aria-label="SmartPDF">
+  <defs>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#101c3d"/><stop offset="1" stop-color="#070d20"/></linearGradient>
+    <linearGradient id="blue" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0a4bd1"/><stop offset="1" stop-color="#3b92ff"/></linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3e8f3"/></linearGradient>
+  </defs>
+  <path d="M380 80 H680 Q740 82 790 130 L1060 405 Q1095 440 1095 480 V1020 Q1095 1170 945 1170 H380 Q230 1170 230 1020 V230 Q230 80 380 80 Z" fill="url(#navy)"/>
+  <path d="M390 1170 L1085 548 Q1095 540 1095 520 V1020 Q1095 1170 945 1170 Z" fill="url(#blue)"/>
+  <path d="M680 80 Q740 82 740 150 V340 Q752 415 830 440 L1000 495 Q1095 520 1095 545 V480 Q1095 440 1060 405 L790 130 Q745 82 680 80 Z" fill="#2f80ff"/>
+  <path d="M345 650 Q345 585 405 548 L745 354 Q765 410 845 440 L985 490 L1085 548 L395 1170 H350 Q345 1170 345 1160 Z" fill="url(#paper)"/>
+  <path d="M345 905 Q350 870 400 840 L690 825 V965 L395 1170 H350 Q345 1170 345 1160 Z" fill="#cfd6e6" opacity=".55"/>
+  <path d="M1000 410 L1060 405 Q1095 440 1095 480 V548 L985 490 Z" fill="#2f80ff"/>
+</svg>

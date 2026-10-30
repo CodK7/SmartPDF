@@ -135,3 +135,19 @@ describe("locale and direction", () => {
     expect(parsed.kind === "cv" && parsed.content.fullName).toBe("سالم");
   });
 });
+
+describe("free-text safety", () => {
+  it("rejects bidi controls in line item descriptions, addresses and achievements", () => {
+    const invoice = createDocument("invoice", "en");
+    invoice.content.lineItems[0]!.description = "spoof\u202Epdf";
+    expect(smartDocumentSchema.safeParse(invoice).success).toBe(false);
+
+    const withAddress = createDocument("invoice", "en");
+    withAddress.content.client.address = "Muscat\u0000";
+    expect(smartDocumentSchema.safeParse(withAddress).success).toBe(false);
+
+    const cv = createDocument("cv", "en");
+    cv.content.experiences = [{ id: crypto.randomUUID(), company: "A", role: "B", startDate: "", endDate: "", current: false, bullets: ["ok", "bad\ud800"] }];
+    expect(smartDocumentSchema.safeParse(cv).success).toBe(false);
+  });
+});
