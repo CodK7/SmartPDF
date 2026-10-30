@@ -5,7 +5,7 @@
 
 ## 1. Chosen deployment architecture
 
-SmartPDF is a Next.js 16 App Router application with server Route Handlers. Deploy it as a Cloudflare Worker through `@opennextjs/cloudflare`; do not use a static Pages export because `/api/export` and `/api/validate` require server execution.
+SmartPDF is a Next.js 16 App Router application with server Route Handlers. Deploy it as a Cloudflare Worker through `@opennextjs/cloudflare`; do not use a static Pages export because `/api/export` requires server execution.
 
 The production PDF path is:
 
@@ -128,6 +128,6 @@ Only after you intentionally complete the manual checks:
 
 ## 10. Current evidence and owner-controlled next steps
 
-Local evidence on 31 August 2026: Lint, Type Check, 98 tests, secret scan, dependency audit, Next build, 17-viewport responsive audit, seven-state accessibility/browser QA, and six local PDFs all pass. Cloudflare type generation passes and the production Next server bundle contains no Playwright or local browser markers.
+Local evidence on 31 August 2026: Lint, Type Check, 102 tests, secret scan, dependency audit, Next build, 17-viewport responsive audit, seven-state accessibility/browser QA, and six local PDFs all pass. Cloudflare type generation passes and the production Next server bundle contains no Playwright or local browser markers.
 
 Remote release evidence was deliberately removed with the external resources. When you are ready, create your own private GitHub repository, choose your Cloudflare account and plan, authenticate Wrangler yourself, run the commands in section 6, and perform the manual checklist. Until you do, `FINAL_AUDIT.md` correctly reports **Production Ready: NO**.

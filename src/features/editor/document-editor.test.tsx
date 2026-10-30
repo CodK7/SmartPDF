@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 const store = vi.hoisted(() => ({
   activeDocument: {
-    id: "44444444-4444-4444-8444-444444444444", ownerId: "local", schemaVersion: 1,
+    id: "44444444-4444-4444-8444-444444444444", ownerId: "local", schemaVersion: 2,
     title: "Invoice", status: "draft", templateId: "signature", locale: "en", direction: "ltr",
     paper: "A4", revision: 0, createdAt: "2026-08-30T00:00:00.000Z", updatedAt: "2026-08-30T00:00:00.000Z",
     kind: "invoice",

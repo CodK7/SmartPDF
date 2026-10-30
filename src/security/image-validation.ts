@@ -1,8 +1,8 @@
-export const MAX_PROFILE_IMAGE_DIMENSION = 12_000;
-export const MAX_PROFILE_IMAGE_PIXELS = 40_000_000;
-export const PROFILE_OUTPUT_SIZE = 512;
+const MAX_PROFILE_IMAGE_DIMENSION = 12_000;
+const MAX_PROFILE_IMAGE_PIXELS = 40_000_000;
+const PROFILE_OUTPUT_SIZE = 512;
 
-export type ImageDimensions = { width: number; height: number };
+type ImageDimensions = { width: number; height: number };
 
 function readUint24LittleEndian(bytes: Uint8Array, offset: number) {
   return bytes[offset]! | (bytes[offset + 1]! << 8) | (bytes[offset + 2]! << 16);

@@ -45,4 +45,31 @@ describe("draft persistence", () => {
     expect(smartDocumentSchema.safeParse(stored).success).toBe(false);
     expect(preflight(stored!).map(({ code }) => code)).toContain("CV_EMAIL_INVALID");
   });
+
+  it.each([["OMR", 123_450], ["AED", 12_345], ["SAR", 12_345]])("reads an old v1 %s invoice without changing the amounts shown", async (currency, expectedMinor) => {
+    const records = installFakeIndexedDb();
+    const invoice = createDocument("invoice", "en");
+    invoice.content.currency = currency;
+    invoice.content.lineItems[0]!.unitPriceMinor = 12_345;
+    invoice.content.discountMinor = 500;
+    records.set(invoice.id, structuredClone({ ...invoice, schemaVersion: 1 }));
+
+    const stored = await getDocument(invoice.id);
+
+    expect(stored?.schemaVersion).toBe(2);
+    expect(stored?.kind === "invoice" && stored.content.lineItems[0]!.unitPriceMinor).toBe(expectedMinor);
+    expect(stored?.kind === "invoice" && stored.content.discountMinor).toBe(currency === "OMR" ? 5_000 : 500);
+  });
+
+  it("does not rescale a document that is already v2", async () => {
+    const records = installFakeIndexedDb();
+    const invoice = createDocument("invoice", "en");
+    invoice.content.currency = "OMR";
+    invoice.content.lineItems[0]!.unitPriceMinor = 12_345;
+    records.set(invoice.id, structuredClone(invoice));
+
+    const stored = await getDocument(invoice.id);
+
+    expect(stored?.kind === "invoice" && stored.content.lineItems[0]!.unitPriceMinor).toBe(12_345);
+  });
 });

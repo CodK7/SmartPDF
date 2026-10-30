@@ -2,7 +2,7 @@ import { createDocument } from "@/domain/documents/defaults";
 import { preflight } from "@/domain/documents/preflight";
 import type { DocumentKind, Locale } from "@/domain/documents/types";
 
-export interface TemplateDefinition {
+interface TemplateDefinition {
   id: string;
   name: Readonly<Record<Locale, string>>;
   description: Readonly<Record<Locale, string>>;
@@ -30,7 +30,7 @@ export const templates: readonly TemplateDefinition[] = [
   },
 ];
 
-export const documentDefinitions = {
+const documentDefinitions = {
   cv: {
     kind: "cv",
     name: { en: "CV / Resume", ar: "السيرة الذاتية" },

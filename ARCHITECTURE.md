@@ -545,3 +545,7 @@ Do not install `motion`, dnd kit, or export-worker dependencies into the initial
 - [Tailwind logical inset and RTL utilities](https://tailwindcss.com/docs/top-right-bottom-left)
 - [Motion accessibility and reduced motion](https://motion.dev/docs/react-accessibility)
 - [Motion layout animation](https://motion.dev/docs/react-layout-animations)
+
+## Money and schema versions
+
+Amounts are integers in the currency's own minor units (`currencyExponent`: 2 decimals for USD/AED/SAR, 3 for OMR). Documents saved with `schemaVersion` 1 stored every amount in hundredths; they are rescaled to the currency's exponent when read from IndexedDB (`draftDocumentSchema`) and saved back as version 2. Changing the currency in the editor rescales amounts so the displayed number stays the same.

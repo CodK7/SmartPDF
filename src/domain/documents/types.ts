@@ -5,7 +5,7 @@ export type DocumentKind = (typeof documentKinds)[number];
 export type Locale = (typeof locales)[number];
 export type Direction = "ltr" | "rtl";
 export const directionForLocale = (locale: Locale): Direction => locale === "ar" ? "rtl" : "ltr";
-export type DocumentStatus = "draft" | "ready" | "archived";
+type DocumentStatus = "draft" | "ready" | "archived";
 
 export interface CvExperience {
   id: string;
@@ -67,14 +67,14 @@ export interface BusinessContent {
   notes: string;
 }
 
-export type InvoiceContent = BusinessContent;
-export type QuotationContent = BusinessContent & { validUntil: string; terms: string };
+type InvoiceContent = BusinessContent;
+type QuotationContent = BusinessContent & { validUntil: string; terms: string };
 
 interface DocumentBase<K extends DocumentKind, C> {
   id: string;
   ownerId: "local";
   kind: K;
-  schemaVersion: 1;
+  schemaVersion: 1 | 2;
   title: string;
   status: DocumentStatus;
   templateId: string;

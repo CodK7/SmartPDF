@@ -9,7 +9,7 @@ function metadata(kind: DocumentKind, locale: Locale) {
     ? { cv: "سيرتي الذاتية", invoice: "فاتورة جديدة", quotation: "عرض سعر جديد" }
     : { cv: "My resume", invoice: "New invoice", quotation: "New quotation" };
   return {
-    id: crypto.randomUUID(), ownerId: "local" as const, schemaVersion: 1 as const,
+    id: crypto.randomUUID(), ownerId: "local" as const, schemaVersion: 2 as const,
     title: labels[kind], status: "draft" as const, templateId: "signature",
     locale, direction: directionForLocale(locale),
     paper: "A4" as const, revision: 0, createdAt: now, updatedAt: now,

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { consumeRateLimit, readBoundedJson, validateSameOriginRequest } from "./request-guard";
 
 function request(body: string, origin = "https://smartpdf.test") {
-  return new Request("https://smartpdf.test/api/validate", {
+  return new Request("https://smartpdf.test/api/export", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -47,10 +47,10 @@ describe("request guard", () => {
   });
 
   it("cannot reset a local quota by rotating forwarding headers", () => {
-    const first = new Request("https://smartpdf.test/api/validate", {
+    const first = new Request("https://smartpdf.test/api/export", {
       headers: { "x-forwarded-for": "198.51.100.10" },
     });
-    const rotated = new Request("https://smartpdf.test/api/validate", {
+    const rotated = new Request("https://smartpdf.test/api/export", {
       headers: { "x-forwarded-for": "198.51.100.11" },
     });
 

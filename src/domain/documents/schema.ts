@@ -2,6 +2,7 @@
 import * as z from "zod/mini";
 import { isCanonicalProfilePhotoDataUrl } from "@/security/image-validation";
 import { isSafeDocumentText } from "@/security/text-validation";
+import { currencyExponent, rescaleAmounts } from "./money";
 import { directionForLocale } from "./types";
 
 const safeText = (max: number) => z.string().check(
@@ -83,7 +84,7 @@ const cvContentSchema = z.object({
 });
 
 const base = {
-  id: z.uuid(), ownerId: z.literal("local"), schemaVersion: z.literal(1),
+  id: z.uuid(), ownerId: z.literal("local"), schemaVersion: z.literal(2),
   title: z.pipe(safeText(120), z.string().check(z.minLength(1))),
   status: z.enum(["draft", "ready", "archived"]),
   templateId: identifier, locale: z.enum(["en", "ar"]),
@@ -92,9 +93,9 @@ const base = {
   createdAt: z.iso.datetime(), updatedAt: z.iso.datetime(),
 };
 
-export const cvDocumentSchema = z.object({ ...base, kind: z.literal("cv"), content: cvContentSchema });
-export const invoiceDocumentSchema = z.object({ ...base, kind: z.literal("invoice"), content: businessContentSchema });
-export const quotationDocumentSchema = z.object({
+const cvDocumentSchema = z.object({ ...base, kind: z.literal("cv"), content: cvContentSchema });
+const invoiceDocumentSchema = z.object({ ...base, kind: z.literal("invoice"), content: businessContentSchema });
+const quotationDocumentSchema = z.object({
   ...base,
   kind: z.literal("quotation"),
   content: z.extend(businessContentSchema, { validUntil: calendarDateText, terms: longText }),
@@ -131,7 +132,8 @@ const draftCvContent = z.object({
   })).check(z.maxLength(20)),
   skills: z.array(draftText()).check(z.maxLength(80)),
 });
-const draftBase = { ...base, title: draftText(120), templateId: draftText(80) };
+// Version 1 stored every amount in hundredths; version 2 uses the currency's own decimals.
+const draftBase = { ...base, schemaVersion: z.union([z.literal(1), z.literal(2)]), title: draftText(120), templateId: draftText(80) };
 
 export const draftDocumentSchema = z.pipe(
   z.discriminatedUnion("kind", [
@@ -139,5 +141,12 @@ export const draftDocumentSchema = z.pipe(
     z.object({ ...draftBase, kind: z.literal("invoice"), content: draftBusinessContent }),
     z.object({ ...draftBase, kind: z.literal("quotation"), content: z.extend(draftBusinessContent, { validUntil: draftText(10), terms: draftText() }) }),
   ]),
-  z.transform((document) => ({ ...document, direction: directionForLocale(document.locale) })),
+  z.transform((document) => {
+    const direction = directionForLocale(document.locale);
+    if (document.kind === "cv") return { ...document, schemaVersion: 2 as const, direction };
+    const content = document.schemaVersion === 1
+      ? rescaleAmounts(document.content, 2, currencyExponent(document.content.currency))
+      : document.content;
+    return { ...document, content, schemaVersion: 2 as const, direction } as typeof document & { schemaVersion: 2 };
+  }),
 );

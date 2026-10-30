@@ -18,7 +18,7 @@ interface ExportBindings {
   PDF_EXPORT_ROUTE_RATE_LIMITER?: RateLimitBinding;
 }
 
-export type ExportAccessResult =
+type ExportAccessResult =
   | { allowed: true; runtime: PdfExportRuntime }
   | { allowed: false; code: "EXPORT_PROTECTION_UNAVAILABLE" | "RATE_LIMITED"; status: 429 | 503 };
 
