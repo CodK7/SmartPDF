@@ -3,3 +3,7 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   workerd: true
+overrides:
+  "glob@>=10.2.0 <10.5.0": "^10.5.0"
+  "source-map-js@>=1.0.0 <1.2.2": "^1.2.2"
+  "vite@>=8.2.0 <=8.2.3": "^8.2.4"
