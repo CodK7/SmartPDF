@@ -4,7 +4,6 @@ import { calculateTotals, formatMoney } from "@/domain/documents/money";
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cvAchievementLines, directionForText } from "@/domain/documents/cv-format";
-import { CV_DOCUMENT_CSS } from "@/document-engine/cv-visual-spec";
 import type { CvDocument, InvoiceDocument, QuotationDocument, SmartDocument } from "@/domain/documents/types";
 
 const previewCopy = {
@@ -97,13 +96,13 @@ function CvPreview({ document }: { document: CvDocument }) {
   const { content } = document;
   const editorial = document.templateId === "editorial";
   const text = previewCopy[document.locale];
-  return <><style>{CV_DOCUMENT_CSS}</style><div className={`page-content cv-document ${editorial ? "editorial" : "professional"}`}>
+  return <div className={`page-content cv-document ${editorial ? "editorial" : "professional"}`}>
     <header className="cv-header"><div className="cv-identity">{content.profilePhotoDataUrl ? <Image unoptimized src={content.profilePhotoDataUrl} width={82} height={82} alt="" aria-hidden="true" className="cv-photo" /> : null}<div className="cv-identity-copy"><h1 className="cv-display cv-name" dir="auto">{content.fullName || text.yourName}</h1><p className="cv-headline" dir="auto">{content.headline || text.headline}</p><p className="cv-specialization" dir="auto">{content.specialization || text.specialization}</p></div></div><p className="cv-contacts" dir="auto">{[content.email, content.phone, content.location].filter(Boolean).join(" · ") || "email@example.com · +000 000 000"}</p></header>
     {content.summary ? <PreviewSection title={text.profile}><p className="cv-body-copy" dir="auto">{content.summary}</p></PreviewSection> : null}
     {content.experiences.length ? <PreviewSection title={text.experience}>{content.experiences.map((experience) => { const lines = cvAchievementLines(experience.bullets); return <article key={experience.id} className="cv-entry"><div className="cv-entry-head"><div><h3 className="cv-entry-title" dir="auto">{experience.role || text.role}</h3><p className="cv-entry-company" dir="auto">{experience.company || text.company}</p></div><p className="cv-entry-date">{formatDateRange(experience.startDate, experience.current ? text.present : experience.endDate, document.locale)}</p></div>{lines.length ? <ul className="cv-achievements">{lines.map((line, index) => <li dir={directionForText(line, document.direction)} key={`${experience.id}-${index}`}>{line}</li>)}</ul> : null}</article>; })}</PreviewSection> : null}
     {content.education.length ? <PreviewSection title={text.education}>{content.education.map((education) => <article key={education.id} className="cv-entry cv-entry-head"><div><h3 className="cv-entry-title" dir="auto">{education.degree}</h3><p className="cv-entry-school" dir="auto">{education.institution}</p></div><p className="cv-entry-date">{formatDateRange(education.startDate, education.endDate, document.locale)}</p></article>)}</PreviewSection> : null}
     {content.skills.length ? <PreviewSection title={text.skills}><div className="cv-skills">{content.skills.filter(Boolean).map((skill) => <span key={skill} className="cv-skill" dir="auto">{skill}</span>)}</div></PreviewSection> : null}
-  </div></>;
+  </div>;
 }
 
 function PreviewSection({ title, children }: { title: string; children: React.ReactNode }) {

@@ -21,7 +21,7 @@ export const CV_DOCUMENT_CSS = `
 .cv-document .cv-entry-company{margin:0;color:#1d4ed8;font-size:13px;font-weight:700;line-height:1.6}
 .cv-document .cv-entry-school{margin:0;color:#475569;font-size:13px;line-height:1.6}
 .cv-document .cv-entry-date{margin:0;flex-shrink:0;color:#64748b;font-size:12px;line-height:1.6;white-space:nowrap}
-.cv-document .cv-achievements{margin:10px 0 0;padding-inline-start:20px;color:#334155;font-size:13.5px;line-height:1.72}
+.cv-document .cv-achievements{margin:10px 0 0;padding-inline-start:20px;color:#334155;font-size:13.5px;line-height:1.72;list-style:disc}
 .cv-document .cv-achievements li+li{margin-top:6px}
 .cv-document .cv-achievements li[dir=rtl]{list-style-position:inside;text-align:right}
 .cv-document .cv-skills{display:flex;flex-wrap:wrap;gap:8px}
