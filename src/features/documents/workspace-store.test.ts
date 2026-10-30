@@ -38,3 +38,22 @@ describe("workspace deletion", () => {
     expect(useWorkspaceStore.getState()).toMatchObject({ documents: [], activeDocument: null });
   });
 });
+
+describe("workspace updates", () => {
+  afterEach(() => useWorkspaceStore.setState({ documents: [], activeDocument: null }));
+
+  it("bumps revision and updatedAt on every edit, even when the updater returns a stale copy", () => {
+    const document = createDocument("cv", "en");
+    useWorkspaceStore.setState({ documents: [document], activeDocument: document });
+
+    useWorkspaceStore.getState().updateActive(() => ({ ...document, title: "First" }));
+    const first = useWorkspaceStore.getState().activeDocument!;
+    useWorkspaceStore.getState().updateActive((current) => ({ ...current, title: "Second" }));
+    const second = useWorkspaceStore.getState().activeDocument!;
+
+    expect([first.revision, second.revision]).toEqual([1, 2]);
+    expect(second.title).toBe("Second");
+    expect(second.updatedAt >= first.updatedAt).toBe(true);
+    expect(first.updatedAt).toBeTruthy();
+  });
+});

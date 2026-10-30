@@ -51,3 +51,17 @@ describe("document editor layout", () => {
     expect(formPane.scrollTop).toBe(0);
   });
 });
+
+describe("save status indicator", () => {
+  it("shows saving, saved and failed states", () => {
+    const { rerender } = render(<DocumentEditor id={store.activeDocument.id} locale="en" />);
+    const status = () => screen.getByRole("status", { name: "" }).textContent;
+    expect(status()).toBe("Saved");
+    for (const [state, label] of [["saving", "Saving…"], ["error", "Save failed"]] as const) {
+      store.saveState = state;
+      rerender(<DocumentEditor id={store.activeDocument.id} locale="en" />);
+      expect(status()).toBe(label);
+    }
+    store.saveState = "saved";
+  });
+});

@@ -1,4 +1,4 @@
-import { smartDocumentSchema } from "@/domain/documents/schema";
+import { draftDocumentSchema } from "@/domain/documents/schema";
 import type { SmartDocument } from "@/domain/documents/types";
 
 const DATABASE_NAME = "smartpdf-local";
@@ -50,7 +50,7 @@ export async function listDocuments(): Promise<SmartDocument[]> {
   const records = await runRequest<unknown[]>("readonly", (store) => store.getAll());
   return records
     .flatMap((record) => {
-      const parsed = smartDocumentSchema.safeParse(record);
+      const parsed = draftDocumentSchema.safeParse(record);
       return parsed.success ? [parsed.data] : [];
     })
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -59,12 +59,12 @@ export async function listDocuments(): Promise<SmartDocument[]> {
 export async function getDocument(id: string): Promise<SmartDocument | null> {
   const record = await runRequest<unknown>("readonly", (store) => store.get(id));
   if (record === undefined) return null;
-  const parsed = smartDocumentSchema.safeParse(record);
+  const parsed = draftDocumentSchema.safeParse(record);
   return parsed.success && parsed.data.ownerId === "local" ? parsed.data : null;
 }
 
 export async function saveDocument(document: SmartDocument): Promise<void> {
-  const validated = smartDocumentSchema.parse(document);
+  const validated = draftDocumentSchema.parse(document);
   await serializeWrite(validated.id, async () => {
     if (deletedDocumentIds.has(validated.id)) throw new Error("DOCUMENT_DELETED");
     await runRequest<IDBValidKey>("readwrite", (store) => store.put(validated));

@@ -41,13 +41,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   openDocument: async (id) => {
     set({ loading: true, error: null });
     const document = await getDocument(id);
-    set({ activeDocument: document, loading: false, error: document ? null : "DOCUMENT_NOT_FOUND" });
+    set({ activeDocument: document, loading: false, saveState: "idle", error: document ? null : "DOCUMENT_NOT_FOUND" });
     return document;
   },
   updateActive: (updater) => {
     const active = get().activeDocument;
     if (!active) return;
-    const next = updater({ ...active, revision: active.revision + 1, updatedAt: new Date().toISOString() });
+    const next = { ...updater(active), revision: active.revision + 1, updatedAt: new Date().toISOString() } as SmartDocument;
     set((state) => ({ activeDocument: next, documents: replaceDocument(state.documents, next) }));
     scheduleAutosave(next, (saveState) => set({ saveState }));
   },

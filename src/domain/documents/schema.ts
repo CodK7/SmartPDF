@@ -97,3 +97,36 @@ export const smartDocumentSchema = z.discriminatedUnion("kind", [
   invoiceDocumentSchema,
   quotationDocumentSchema,
 ]);
+
+// Drafts are stored with structural validation only, so one temporarily invalid
+// field never blocks saving the rest. Strict validation runs at export.
+const draftText = (max = 20_000) => z.string().max(max);
+const draftParty = z.object({ name: draftText(), email: draftText(), phone: draftText(), address: draftText(), taxId: draftText() });
+const draftBusinessContent = z.object({
+  issuer: draftParty, client: draftParty,
+  number: draftText(), issueDate: draftText(10), dueDate: draftText(10), currency: draftText(10),
+  lineItems: z.array(z.object({
+    id: z.uuid(), description: draftText(), quantity: z.number().finite(), unitPriceMinor: z.number().finite(),
+  })).max(100),
+  taxRate: z.number().finite(), discountMinor: z.number().finite(), notes: draftText(),
+});
+const draftCvContent = z.object({
+  profilePhotoDataUrl: profilePhotoDataUrl.catch(""),
+  fullName: draftText(), headline: draftText(), specialization: draftText().default(""),
+  email: draftText(), phone: draftText(), location: draftText(), summary: draftText(),
+  experiences: z.array(z.object({
+    id: z.uuid(), company: draftText(), role: draftText(),
+    startDate: draftText(10), endDate: draftText(10), current: z.boolean(), bullets: z.array(draftText()).max(12),
+  })).max(30),
+  education: z.array(z.object({
+    id: z.uuid(), institution: draftText(), degree: draftText(), startDate: draftText(10), endDate: draftText(10),
+  })).max(20),
+  skills: z.array(draftText()).max(80),
+});
+const draftBase = { ...base, title: draftText(120), templateId: draftText(80) };
+
+export const draftDocumentSchema = z.discriminatedUnion("kind", [
+  z.object({ ...draftBase, kind: z.literal("cv"), content: draftCvContent }),
+  z.object({ ...draftBase, kind: z.literal("invoice"), content: draftBusinessContent }),
+  z.object({ ...draftBase, kind: z.literal("quotation"), content: draftBusinessContent.extend({ validUntil: draftText(10), terms: draftText() }) }),
+]);
