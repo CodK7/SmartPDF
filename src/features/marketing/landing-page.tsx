@@ -16,7 +16,7 @@ const en = {
     summary: "Business manager with a record of improving operations, growing revenue, and building high-performing teams.",
     company: "Harbor & Cole", job: "Senior Business Manager", date: "2021 — Present",
     point: "Led commercial planning and streamlined operations across three regional teams.", skills: "Core skills", skillList: ["Business Strategy", "Team Leadership", "Operations"],
-    contact: "daniel44@gmail.com · +1 (312) 555-0147 · Chicago, IL", photoAlt: "Portrait of Daniel Brooks",
+    contact: "daniel.brooks@example.com · +1 (312) 555-0147 · Chicago, IL", photoAlt: "Portrait of Daniel Brooks",
 } as const;
 
 const ar = {
@@ -30,7 +30,7 @@ const ar = {
     summary: "مدير أعمال بسجل حافل في تحسين العمليات ونمو الإيرادات وبناء فرق عالية الأداء.",
     company: "هاربر آند كول", job: "مدير أعمال أول", date: "2021 — حتى الآن",
     point: "قاد التخطيط التجاري وبسّط العمليات عبر ثلاثة فرق إقليمية.", skills: "المهارات الأساسية", skillList: ["استراتيجية الأعمال", "قيادة الفرق", "العمليات"],
-    contact: "daniel44@gmail.com · +1 (312) 555-0147 · شيكاغو", photoAlt: "صورة شخصية لدانيال بروكس",
+    contact: "daniel.brooks@example.com · +1 (312) 555-0147 · شيكاغو", photoAlt: "صورة شخصية لدانيال بروكس",
 } as const;
 
 export function LandingPage({ locale = "en" }: { locale?: Locale }) {

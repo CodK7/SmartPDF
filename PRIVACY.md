@@ -4,7 +4,7 @@ Last updated: 31 August 2026
 
 ## Local document storage
 
-SmartPDF stores document drafts in the browser on the user's device. SmartPDF does not provide cloud document storage or account synchronization in the current release.
+SmartPDF stores document drafts in the browser (IndexedDB) on the user's device. SmartPDF does not provide cloud document storage or account synchronization in the current release. Drafts are deleted when the user deletes them or clears the site's data in the browser; they cannot be recovered afterwards.
 
 ## PDF export processing
 

@@ -34,7 +34,7 @@ Production remains safe by default: the base Worker configuration has `PDF_EXPOR
 | Tests | Pass | 25 files, 79 tests |
 | Secret scan | Pass | no committed environment file or candidate secret pattern |
 | Dependency audit | Pass | no known High-severity vulnerability |
-| Next.js production build | Pass | Next 16.3.3 optimized build |
+| Next.js production build | Pass | Next 16.4.3 optimized build |
 | Cloudflare type generation | Pass | `BROWSER`, `ASSETS`, both Rate Limit bindings, Preview env |
 | Production bundle isolation | Pass | no `playwright-core`, `CHROMIUM_EXECUTABLE_PATH`, Edge, or Chrome path marker in the export route/chunks |
 | Local full browser QA | Pass | no console errors, failed requests, bad responses, or blocking axe finding |

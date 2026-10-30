@@ -15,8 +15,8 @@ describe("English landing page", () => {
     expect(screen.getByRole("img", { name: "Portrait of Daniel Brooks" })).toHaveClass("rounded-full");
     expect(screen.getByText("Daniel Brooks")).toBeInTheDocument();
     expect(screen.getByText(/\+1 \(312\) 555-0147/)).toBeInTheDocument();
-    expect(screen.getByText(/daniel44@gmail\.com/)).toBeInTheDocument();
-    expect(screen.queryByText(/daniel\.brooks@example\.com/)).not.toBeInTheDocument();
+    expect(screen.getByText(/daniel\.brooks@example\.com/)).toBeInTheDocument();
+    expect(screen.queryByText(/gmail\.com/)).not.toBeInTheDocument();
     expect(screen.getByText(/Privacy first/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Privacy details" })).toHaveAttribute("href", "/en/privacy");
     expect(screen.queryByText(/quotation/i)).not.toBeInTheDocument();

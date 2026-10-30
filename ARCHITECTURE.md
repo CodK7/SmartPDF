@@ -30,7 +30,7 @@
 | Motion | CSS transitions first; Motion only for layout/enter/exit | Avoid a motion dependency for simple hover/fade while retaining robust layout and reduced-motion support |
 | Reorder | dnd kit, only for repeatable/reorderable sections | Accessible drag-and-drop with explicit keyboard/button fallbacks; recommended by Pick UI Library |
 | Icons | Phosphor Icons | Consistent regular outline system with good document/navigation coverage |
-| Localization | Locale segment + `next-intl` behind a small i18n adapter | ICU messages, plurals, formatting, server/client use, and explicit `/en` / `/ar` routing |
+| Localization | Locale segment + a small i18n adapter (`src/i18n/config.ts`); copy lives next to each component | Explicit `/en` / `/ar` routing with locale-matched direction; `next-intl` is not used |
 | Tests | Vitest, Testing Library, Playwright, axe | Unit/component, bidi/flow E2E, and automated accessibility coverage |
 
 React Hook Form, Zod, `next-intl`, and test tools are outside the Pick UI Library curated list because that list does not cover form-schema validation, full localization, or testing. They are selected for uncovered requirements, not as competing UI libraries.
