@@ -3,7 +3,7 @@ import { documentDefinitionFor, templates, templateText } from "@/document-engin
 import { createDocument } from "./defaults";
 import { calculateTotals } from "./money";
 import { preflight } from "./preflight";
-import { smartDocumentSchema } from "./schema";
+import { draftDocumentSchema, smartDocumentSchema } from "./schema";
 
 describe("document engine", () => {
   it.each(["cv", "invoice", "quotation"] as const)("creates a valid %s document", (kind) => {
@@ -116,5 +116,22 @@ describe("document engine", () => {
     const parsed = smartDocumentSchema.safeParse(legacy);
     expect(parsed.success).toBe(true);
     if (parsed.success && parsed.data.kind === "cv") expect(parsed.data.content.specialization).toBe("");
+  });
+});
+
+describe("locale and direction", () => {
+  it("creates matching locale and direction pairs and rejects mismatches at export", () => {
+    expect(createDocument("cv", "ar").direction).toBe("rtl");
+    expect(createDocument("invoice", "en").direction).toBe("ltr");
+    const mismatched = { ...createDocument("cv", "ar"), direction: "ltr" as const };
+    expect(smartDocumentSchema.safeParse(mismatched).success).toBe(false);
+  });
+
+  it("normalizes the direction of stored drafts from their locale without losing content", () => {
+    const stored = { ...createDocument("cv", "ar"), direction: "ltr" as const };
+    stored.content.fullName = "سالم";
+    const parsed = draftDocumentSchema.parse(stored);
+    expect(parsed.direction).toBe("rtl");
+    expect(parsed.kind === "cv" && parsed.content.fullName).toBe("سالم");
   });
 });

@@ -32,18 +32,13 @@ export function middleware(request: NextRequest) {
   const policy = contentSecurityPolicy(nonce);
   const { pathname } = request.nextUrl;
   const firstSegment = pathname.split("/")[1] ?? "";
-  if (firstSegment === "ar") {
-    const url = request.nextUrl.clone();
-    url.pathname = `/en${pathname.slice(3)}`;
-    return withCsp(NextResponse.redirect(url), policy);
-  }
   if (!isLocale(firstSegment)) {
     const url = request.nextUrl.clone();
     url.pathname = `/en${pathname === "/" ? "" : pathname}`;
     return withCsp(NextResponse.redirect(url), policy);
   }
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-smartpdf-locale", "en");
+  requestHeaders.set("x-smartpdf-locale", firstSegment);
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("content-security-policy", policy);
   return withCsp(NextResponse.next({ request: { headers: requestHeaders } }), policy);

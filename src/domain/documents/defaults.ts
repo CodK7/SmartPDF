@@ -1,4 +1,4 @@
-import type { CvDocument, DocumentKind, InvoiceDocument, Locale, Party, QuotationDocument, SmartDocument } from "./types";
+import { directionForLocale, type CvDocument, DocumentKind, InvoiceDocument, Locale, Party, QuotationDocument, SmartDocument } from "./types";
 
 const emptyParty = (): Party => ({ name: "", email: "", phone: "", address: "", taxId: "" });
 const today = () => new Date().toISOString().slice(0, 10);
@@ -11,7 +11,7 @@ function metadata(kind: DocumentKind, locale: Locale) {
   return {
     id: crypto.randomUUID(), ownerId: "local" as const, schemaVersion: 1 as const,
     title: labels[kind], status: "draft" as const, templateId: "signature",
-    locale, direction: locale === "ar" ? "rtl" as const : "ltr" as const,
+    locale, direction: directionForLocale(locale),
     paper: "A4" as const, revision: 0, createdAt: now, updatedAt: now,
   };
 }

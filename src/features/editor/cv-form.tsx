@@ -1,7 +1,6 @@
 import { Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/design-system/components/button";
 import { Field, Input, Textarea } from "@/design-system/components/field";
-import { directionForCv } from "@/domain/documents/cv-format";
 import type { CvDocument, CvEducation, CvExperience, Locale } from "@/domain/documents/types";
 import { MonthYearField } from "./month-year-field";
 import { ProfilePhotoField } from "./profile-photo-field";
@@ -32,7 +31,7 @@ export function CvForm({ document, locale, update }: { document: CvDocument; loc
   const text = copy[locale];
   const patch = (value: Partial<typeof c>) => {
     const content = { ...c, ...value };
-    update({ ...document, direction: directionForCv(content, document.direction), content });
+    update({ ...document, content });
   };
   const updateExperience = (id: string, value: Partial<CvExperience>) => patch({ experiences: c.experiences.map((item) => item.id === id ? { ...item, ...value } : item) });
   const updateEducation = (id: string, value: Partial<CvEducation>) => patch({ education: c.education.map((item) => item.id === id ? { ...item, ...value } : item) });

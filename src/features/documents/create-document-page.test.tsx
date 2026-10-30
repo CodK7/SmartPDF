@@ -22,13 +22,14 @@ describe("create document flow", () => {
     }
   });
 
-  it("shows only CV and Invoice without language, quotation, or template selectors", () => {
+  it("shows CV and Invoice plus a document language choice, without quotation or template selectors", () => {
     render(<CreateDocumentPage locale="en" />);
-    expect(screen.getAllByRole("radio")).toHaveLength(2);
+    expect(screen.getAllByRole("radio")).toHaveLength(4);
     expect(screen.getByRole("radio", { name: /CV \/ Resume/i })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: /Invoice/i })).toBeInTheDocument();
     expect(screen.queryByRole("radio", { name: /Quotation/i })).not.toBeInTheDocument();
-    expect(screen.queryByText("Document language")).not.toBeInTheDocument();
+    expect(screen.getByText("Document language")).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "English" })).toBeChecked();
     expect(screen.queryByText("Template")).not.toBeInTheDocument();
     expect(screen.queryByText("Professional")).not.toBeInTheDocument();
     expect(screen.queryByText("Editorial")).not.toBeInTheDocument();
@@ -45,6 +46,20 @@ describe("create document flow", () => {
     await user.click(screen.getByRole("button", { name: "Create and Open Editor" }));
 
     expect(createDocument).toHaveBeenCalledWith(kind, "en", "signature");
+    expect(push).toHaveBeenCalledWith("/en/app/documents/33333333-3333-4333-8333-333333333333");
+  });
+});
+
+describe("document language", () => {
+  afterEach(() => { cleanup(); vi.clearAllMocks(); });
+
+  it("creates an Arabic document from the English UI and stays on the UI locale route", async () => {
+    const user = userEvent.setup();
+    render(<CreateDocumentPage locale="en" />);
+    await user.click(screen.getByRole("radio", { name: "العربية" }));
+    await user.click(screen.getByRole("button", { name: "Create and Open Editor" }));
+
+    expect(createDocument).toHaveBeenCalledWith("cv", "ar", "signature");
     expect(push).toHaveBeenCalledWith("/en/app/documents/33333333-3333-4333-8333-333333333333");
   });
 });

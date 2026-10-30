@@ -3,15 +3,15 @@ import { describe, expect, it } from "vitest";
 
 import { LandingPage } from "./landing-page";
 
-describe("English-only landing page", () => {
-  it("keeps one workspace link and exposes no language switch or quotation copy", () => {
+describe("English landing page", () => {
+  it("keeps one workspace link, offers the Arabic switch, and has no quotation copy", () => {
     render(<LandingPage />);
 
     expect(screen.getByText("SmartPDF")).toBeInTheDocument();
     expect(screen.queryByText("SmartPDF AI")).not.toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "Open workspace" })).toHaveLength(1);
     expect(screen.getByRole("link", { name: "Open workspace" })).toHaveClass("display-type");
-    expect(screen.queryByRole("link", { name: "العربية" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "العربية" })).toHaveAttribute("href", "/ar");
     expect(screen.getByRole("img", { name: "Portrait of Daniel Brooks" })).toHaveClass("rounded-full");
     expect(screen.getByText("Daniel Brooks")).toBeInTheDocument();
     expect(screen.getByText(/\+1 \(312\) 555-0147/)).toBeInTheDocument();

@@ -17,9 +17,16 @@ describe("security middleware", () => {
   });
 
   it("applies CSP to locale redirects", () => {
-    const response = middleware(new NextRequest("https://smartpdf.test/ar/app"));
+    const response = middleware(new NextRequest("https://smartpdf.test/privacy"));
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://smartpdf.test/en/app");
+    expect(response.headers.get("location")).toBe("https://smartpdf.test/en/privacy");
+    expect(response.headers.get("content-security-policy")).toContain("object-src 'none'");
+  });
+
+  it("serves Arabic routes and forwards their locale", () => {
+    const response = middleware(new NextRequest("https://smartpdf.test/ar/app"));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-request-x-smartpdf-locale")).toBe("ar");
     expect(response.headers.get("content-security-policy")).toContain("object-src 'none'");
   });
 });

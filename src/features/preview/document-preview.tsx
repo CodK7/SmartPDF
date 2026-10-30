@@ -75,7 +75,7 @@ export function DocumentPreview({ document }: { document: SmartDocument }) {
 }
 
 function PreviewPage({ document, label, children }: { document: SmartDocument; label: string; children: React.ReactNode }) {
-  return <div className="preview-scale"><article className="document-page" data-paper={document.paper} dir={document.direction} aria-label={label}>{children}</article></div>;
+  return <div className="preview-scale"><article className="document-page" data-paper={document.paper} lang={document.locale} dir={document.direction} aria-label={label}>{children}</article></div>;
 }
 
 function paginateBusinessItems(document: InvoiceDocument | QuotationDocument) {

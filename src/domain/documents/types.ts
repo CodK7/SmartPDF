@@ -4,6 +4,7 @@ export const locales = ["en", "ar"] as const;
 export type DocumentKind = (typeof documentKinds)[number];
 export type Locale = (typeof locales)[number];
 export type Direction = "ltr" | "rtl";
+export const directionForLocale = (locale: Locale): Direction => locale === "ar" ? "rtl" : "ltr";
 export type DocumentStatus = "draft" | "ready" | "archived";
 
 export interface CvExperience {

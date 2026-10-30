@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isCanonicalProfilePhotoDataUrl } from "@/security/image-validation";
 import { isSafeDocumentText } from "@/security/text-validation";
+import { directionForLocale } from "./types";
 
 const safeText = (max: number) => z.string().trim().max(max).refine(isSafeDocumentText, "Invalid Unicode text").transform((value) => value.normalize("NFC"));
 const shortText = safeText(160);
@@ -96,7 +97,7 @@ export const smartDocumentSchema = z.discriminatedUnion("kind", [
   cvDocumentSchema,
   invoiceDocumentSchema,
   quotationDocumentSchema,
-]);
+]).refine((document) => document.direction === directionForLocale(document.locale), { path: ["direction"], message: "Direction must match locale" });
 
 // Drafts are stored with structural validation only, so one temporarily invalid
 // field never blocks saving the rest. Strict validation runs at export.
@@ -129,4 +130,4 @@ export const draftDocumentSchema = z.discriminatedUnion("kind", [
   z.object({ ...draftBase, kind: z.literal("cv"), content: draftCvContent }),
   z.object({ ...draftBase, kind: z.literal("invoice"), content: draftBusinessContent }),
   z.object({ ...draftBase, kind: z.literal("quotation"), content: draftBusinessContent.extend({ validUntil: draftText(10), terms: draftText() }) }),
-]);
+]).transform((document) => ({ ...document, direction: directionForLocale(document.locale) }));

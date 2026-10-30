@@ -5,5 +5,5 @@ import { isLocale } from "@/i18n/config";
 export default async function Page({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <LandingPage />;
+  return <LandingPage locale={locale} />;
 }
